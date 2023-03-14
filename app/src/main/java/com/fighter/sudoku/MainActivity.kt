@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnClear: Button
     private lateinit var btnSolve: Button
     private lateinit var sudokuGrid: GridLayout
+    private var numCellsEntered = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
                 tvCell.text = ""
             }
         }
+        numCellsEntered = 0
     }
 
     private fun initViews() {
@@ -58,36 +60,27 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun generateCellsId() {
-        var numCellsEntered = 0
+
         for (row in 0 until 9) {
             for (col in 0 until 9) {
                 val cellIndex = row * 9 + col
                 val tvCell = sudokuGrid.getChildAt(cellIndex) as TextView
                 tvCell.setOnClickListener {
-                    if (numCellsEntered < 17) {
-                        for (textViewId in numbersId) {
-                            val tvNumber = findViewById<TextView>(textViewId)
-                            tvNumber.setOnClickListener {
-                                if (isValidPlacement(row, col, tvNumber.text.toString().toInt())) {
-                                    tvCell.text = tvNumber.text.toString()
-                                    numCellsEntered++
-                                }
-                                else{
-                                    Toast.makeText(
-                                        this,
-                                        "Wrong number",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-
+                    for (textViewId in numbersId) {
+                        val tvNumber = findViewById<TextView>(textViewId)
+                        tvNumber.setOnClickListener {
+                            if (isValidPlacement(row, col, tvNumber.text.toString().toInt())) {
+                                tvCell.text = tvNumber.text.toString()
+                                numCellsEntered++
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    "Wrong number",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
+
                         }
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "You should enter only 17 numbers or lower",
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
                 }
             }
@@ -116,7 +109,6 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
-
 
 
     private fun getCellValue(row: Int, col: Int): Int? {
